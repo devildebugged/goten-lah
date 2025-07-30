@@ -1,8 +1,6 @@
 package matx
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func Add(m1, m2 *Matx) (*Matx, error) {
 

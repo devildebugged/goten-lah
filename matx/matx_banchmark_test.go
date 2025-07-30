@@ -1,8 +1,6 @@
 package matx
 
-import (
-	"testing"
-)
+import "testing"
 
 func BenchmarkMultiply2x2(b *testing.B) {
 	a, _ := New([]float64{1, 2, 3, 4}, []int{2, 2})

@@ -1,8 +1,6 @@
 package matx
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func Invert(m *Matx) (*Matx, error) {
 	if m == nil {

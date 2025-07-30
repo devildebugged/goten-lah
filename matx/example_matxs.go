@@ -1,8 +1,6 @@
 package matx
 
-import (
-	"fmt"
-)
+import "fmt"
 
 var matxExamples = map[string]*Matx{}
 

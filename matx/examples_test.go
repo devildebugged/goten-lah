@@ -2,8 +2,8 @@ package matx_test
 
 import (
 	"fmt"
-	"goten/matx"
-	"goten/utils"
+
+	"github.com/devildebugged/goten/matx"
 )
 
 func ExampleNew() {
@@ -57,10 +57,10 @@ func ExampleDot() {
 	}
 
 	fmt.Println("Matrix 1: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	fmt.Println("Matrix 2: ")
-	utils.PrintMatx(n)
+	matx.PrintMatx(n)
 
 	result, errr := matx.Dot(m, n)
 	if errr != nil {
@@ -82,10 +82,10 @@ func ExampleAdd() {
 	}
 
 	fmt.Println("Matrix 1: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	fmt.Println("Matrix 2: ")
-	utils.PrintMatx(n)
+	matx.PrintMatx(n)
 
 	result, errr := matx.Add(m, n)
 	if errr != nil {
@@ -94,7 +94,7 @@ func ExampleAdd() {
 	}
 
 	fmt.Println("Result: ")
-	utils.PrintMatx(result)
+	matx.PrintMatx(result)
 }
 
 func ExampleMultiply() {
@@ -107,10 +107,10 @@ func ExampleMultiply() {
 	}
 
 	fmt.Println("Matrix 1: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	fmt.Println("Matrix 2: ")
-	utils.PrintMatx(n)
+	matx.PrintMatx(n)
 
 	result, errr := matx.Multiply(m, n)
 	if errr != nil {
@@ -119,7 +119,7 @@ func ExampleMultiply() {
 	}
 
 	fmt.Println("Result: ")
-	utils.PrintMatx(result)
+	matx.PrintMatx(result)
 }
 
 func ExampleGet() {
@@ -131,7 +131,7 @@ func ExampleGet() {
 	}
 
 	fmt.Println("Matrix 1: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	element, errr := matx.Get(m, 1, 2)
 
@@ -152,7 +152,7 @@ func ExampleSet() {
 	}
 
 	fmt.Println("Matrix (before): ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	errr := matx.Set(0, m, 1, 1)
 
@@ -162,7 +162,7 @@ func ExampleSet() {
 	}
 
 	fmt.Println("Matrix (after): ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 }
 
 func ExampleTranspose() {
@@ -174,7 +174,7 @@ func ExampleTranspose() {
 	}
 
 	fmt.Println("Matrix (before): ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	tm, errr := matx.Transpose(m)
 
@@ -184,7 +184,7 @@ func ExampleTranspose() {
 	}
 
 	fmt.Println("Matrix (after): ")
-	utils.PrintMatx(tm)
+	matx.PrintMatx(tm)
 }
 
 func ExampleRand() {
@@ -196,7 +196,7 @@ func ExampleRand() {
 	}
 
 	fmt.Println("Matrix: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 }
 
 func ExampleInvert() {
@@ -208,7 +208,7 @@ func ExampleInvert() {
 	}
 
 	fmt.Println("Matrix: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	im, errr := matx.Invert(m)
 
@@ -218,7 +218,7 @@ func ExampleInvert() {
 	}
 
 	fmt.Println("Inverted matrix: ")
-	utils.PrintMatx(im)
+	matx.PrintMatx(im)
 }
 
 func ExampleDet() {
@@ -230,7 +230,7 @@ func ExampleDet() {
 	}
 
 	fmt.Println("Matrix: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	det, errr := matx.Det(m)
 
@@ -252,7 +252,7 @@ func ExampleIdentity() {
 	}
 
 	fmt.Println("Matrix: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 }
 
 func ExampleClone() {
@@ -264,7 +264,7 @@ func ExampleClone() {
 	}
 
 	fmt.Println("Matrix: ")
-	utils.PrintMatx(m)
+	matx.PrintMatx(m)
 
 	cm, errr := matx.Clone(m)
 
@@ -274,7 +274,7 @@ func ExampleClone() {
 	}
 
 	fmt.Println("Cloned matrix: ")
-	utils.PrintMatx(cm)
+	matx.PrintMatx(cm)
 }
 
 func ExampleLUDecomposeWithPivoting() {
@@ -296,10 +296,10 @@ func ExampleLUDecomposeWithPivoting() {
 	}
 
 	fmt.Println("L:")
-	utils.PrintMatx(L)
+	matx.PrintMatx(L)
 
 	fmt.Println("U:")
-	utils.PrintMatx(U)
+	matx.PrintMatx(U)
 
 	fmt.Println("Pivot indices:", pivots)
 	fmt.Println("Number of row swaps:", swaps)

@@ -1,8 +1,6 @@
 package matx
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func PrintMatx(m *Matx, format ...string) {
 	if m == nil || m.Data == nil || len(m.Dimensions) == 0 {
