@@ -3,7 +3,7 @@ package matx_test
 import (
 	"fmt"
 
-	"github.com/devildebugged/goten/matx"
+	"github.com/devildebugged/goten-lah/matx"
 )
 
 func ExampleNew() {
