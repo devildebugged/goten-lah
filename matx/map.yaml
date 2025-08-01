@@ -3,6 +3,7 @@ math_ops.go
 - Negate
 - Scale
 - Raise
+- Reciprocal
 
 lin_alg.go
 - Det
