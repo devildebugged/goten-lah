@@ -1,6 +1,9 @@
 package matx
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func Add(m1, m2 *Matx) (*Matx, error) {
 
@@ -34,4 +37,40 @@ func Add(m1, m2 *Matx) (*Matx, error) {
 	}
 
 	return resultMatx, nil
+}
+
+func Negate(m *Matx) (*Matx, error) {
+	if m == nil || m.Data == nil {
+		return nil, fmt.Errorf("cannot negate: matrix is nil or uninitialized")
+	}
+
+	for i := range m.Data {
+		m.Data[i] *= -1
+	}
+
+	return m, nil
+}
+
+func Scale(m *Matx, n int) (*Matx, error) {
+	if m == nil {
+		return nil, fmt.Errorf("Nil matric given")
+	}
+
+	for i := 0; i < len(m.Data); i++ {
+		m.Data[i] *= float64(n)
+	}
+
+	return m, nil
+}
+
+func Raise(m *Matx, power float64) (*Matx, error) {
+	if m == nil || m.Data == nil {
+		return nil, fmt.Errorf("cannot raise: matrix is nil or uninitialized")
+	}
+
+	for i := range m.Data {
+		m.Data[i] = math.Pow(m.Data[i], power)
+	}
+
+	return m, nil
 }
