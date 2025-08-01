@@ -78,3 +78,21 @@ func Raise(m *Matx, power float64) (*Matx, error) {
 	}
 	return m, nil
 }
+
+// Reciprocal transforms each element of the matrix to its multiplicative inverse (1/x).
+// This operation is performed in-place. Returns an error if the matrix is nil, uninitialized,
+// or contains zero elements (which would cause division by zero).
+func Reciprocal(m *Matx) (*Matx, error) {
+	if m == nil || m.Data == nil {
+		return nil, fmt.Errorf("cannot reciprocate: matrix or matrix data is nil")
+	}
+
+	for i := range m.Data {
+		if m.Data[i] == 0 {
+			return nil, fmt.Errorf("cannot reciprocate: division by zero at index %d", i)
+		}
+		m.Data[i] = 1 / m.Data[i]
+	}
+
+	return m, nil
+}
