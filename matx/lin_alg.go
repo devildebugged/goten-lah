@@ -321,3 +321,31 @@ func Multiply(m1, m2 *Matx) (*Matx, error) {
 
 	return result, nil
 }
+
+// Hadamard performs element wise multiplication on any 2 N-dimensional matrices
+// Returns pointer to the result matrix
+func Hadamard(m1, m2 *Matx) (*Matx, error) {
+	if m1 == nil || m2 == nil {
+		return nil, fmt.Errorf("one or both matrices are nil")
+	}
+	if !CheckDimensionEquality(m1.Dimensions, m2.Dimensions) {
+		return nil, fmt.Errorf(
+			"dimensions mismatch: %v vs %v", m1.Dimensions, m2.Dimensions,
+		)
+	}
+
+	resultData := make([]float64, len(m1.Data))
+
+	for i := 0; i < len(m1.Data); i++ {
+		resultData[i] = m1.Data[i] * m2.Data[i]
+	}
+
+	result, err := New(resultData, m1.Dimensions)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create result matrix for hadamard")
+	}
+
+	return result, nil
+
+}
