@@ -5,6 +5,8 @@ import (
 	"math"
 )
 
+// Det computes the determinant of a square matrix using LU decomposition with pivoting.
+// Returns an error if the matrix is not square or is nil.
 func Det(m *Matx) (float64, error) {
 	if m == nil {
 		return 0, fmt.Errorf("Nil matrix passed")
@@ -19,14 +21,16 @@ func Det(m *Matx) (float64, error) {
 	}
 
 	det := 1.0
+	// Product of the diagonal elements of U gives the determinant
 	for i := 0; i < m.Dimensions[0]; i++ {
 		diag := mustGet(U, i, i)
 		if math.Abs(diag) < 1e-12 {
-			return 0, nil
+			return 0, nil // determinant is zero (singular matrix)
 		}
 		det *= diag
 	}
 
+	// Adjust sign based on number of row swaps
 	if swapCount%2 != 0 {
 		det = -det
 	}
@@ -34,6 +38,8 @@ func Det(m *Matx) (float64, error) {
 	return det, nil
 }
 
+// Invert computes the inverse of a square matrix using LU decomposition.
+// Returns an error if the matrix is not square or inversion fails.
 func Invert(m *Matx) (*Matx, error) {
 	if m == nil {
 		return nil, fmt.Errorf("Nil matrix")
@@ -54,13 +60,14 @@ func Invert(m *Matx) (*Matx, error) {
 	y := make([]float64, n)
 	x := make([]float64, n)
 
+	// Solve A * x = e for each column e of the identity matrix
 	for col := 0; col < n; col++ {
-		// zero out slices
 		for i := 0; i < n; i++ {
 			e[i], y[i], x[i] = 0, 0, 0
 		}
 		e[pivots[col]] = 1.0
 
+		// Forward substitution: L * y = e
 		for i := 0; i < n; i++ {
 			sum := 0.0
 			for j := 0; j < i; j++ {
@@ -69,6 +76,7 @@ func Invert(m *Matx) (*Matx, error) {
 			y[i] = e[i] - sum
 		}
 
+		// Backward substitution: U * x = y
 		for i := n - 1; i >= 0; i-- {
 			sum := 0.0
 			for j := i + 1; j < n; j++ {
@@ -77,6 +85,7 @@ func Invert(m *Matx) (*Matx, error) {
 			x[i] = (y[i] - sum) / mustGet(U, i, i)
 		}
 
+		// Store result column-wise
 		for row := 0; row < n; row++ {
 			mustSet(x[row], inv, row, col)
 		}
@@ -85,6 +94,7 @@ func Invert(m *Matx) (*Matx, error) {
 	return inv, nil
 }
 
+// IsInvertible checks whether a matrix is invertible by evaluating its determinant.
 func IsInvertible(m *Matx) (bool, error) {
 	if m == nil {
 		return false, fmt.Errorf("Nil matrix passed")
@@ -97,12 +107,15 @@ func IsInvertible(m *Matx) (bool, error) {
 	return math.Abs(det) > 1e-12, nil
 }
 
+// LUDecomposeWithPivoting performs LU decomposition with partial pivoting.
+// Returns L, U, pivot indices, number of row swaps, or error if the matrix is singular or not square.
 func LUDecomposeWithPivoting(orig *Matx) (*Matx, *Matx, []int, int, error) {
 	n := orig.Dimensions[0]
 	if n != orig.Dimensions[1] {
 		return nil, nil, nil, 0, fmt.Errorf("Matrix must be square")
 	}
 
+	// Make a copy of the original matrix
 	A := &Matx{
 		Data:       append([]float64(nil), orig.Data...),
 		Dimensions: []int{n, n},
@@ -118,7 +131,7 @@ func LUDecomposeWithPivoting(orig *Matx) (*Matx, *Matx, []int, int, error) {
 	swapCount := 0
 
 	for i := 0; i < n; i++ {
-
+		// Find pivot row for column i
 		maxIdx := i
 		maxVal := math.Abs(mustGet(A, i, i))
 		for k := i + 1; k < n; k++ {
@@ -131,6 +144,7 @@ func LUDecomposeWithPivoting(orig *Matx) (*Matx, *Matx, []int, int, error) {
 			return nil, nil, nil, 0, fmt.Errorf("Matrix is singular")
 		}
 
+		// Swap rows if needed
 		if maxIdx != i {
 			if err := RowSwap(A, i, maxIdx); err != nil {
 				return nil, nil, nil, 0, err
@@ -139,6 +153,7 @@ func LUDecomposeWithPivoting(orig *Matx) (*Matx, *Matx, []int, int, error) {
 			swapCount++
 		}
 
+		// Compute U
 		for j := i; j < n; j++ {
 			sum := 0.0
 			for k := 0; k < i; k++ {
@@ -147,6 +162,7 @@ func LUDecomposeWithPivoting(orig *Matx) (*Matx, *Matx, []int, int, error) {
 			mustSet(mustGet(A, i, j)-sum, U, i, j)
 		}
 
+		// Compute L
 		for j := i; j < n; j++ {
 			if i == j {
 				mustSet(1.0, L, i, i)
@@ -163,6 +179,7 @@ func LUDecomposeWithPivoting(orig *Matx) (*Matx, *Matx, []int, int, error) {
 	return L, U, pivots, swapCount, nil
 }
 
+// IsSymmetric checks whether a 2D square matrix is symmetric.
 func IsSymmetric(m *Matx) (bool, error) {
 	if m == nil {
 		return false, fmt.Errorf("Nil matrix passed")
@@ -192,6 +209,8 @@ func IsSymmetric(m *Matx) (bool, error) {
 	return true, nil
 }
 
+// Dot computes the dot product of two 1D vectors.
+// Returns an error if dimensions do not match or inputs are not vectors.
 func Dot(m1 *Matx, m2 *Matx) (float64, error) {
 	if m1 == nil || m2 == nil {
 		return 0, fmt.Errorf("One or both matrices passed are nil")
@@ -213,6 +232,8 @@ func Dot(m1 *Matx, m2 *Matx) (float64, error) {
 	return sum, nil
 }
 
+// Transpose returns the transpose of a 2D matrix.
+// Rows become columns and vice versa.
 func Transpose(m *Matx) (*Matx, error) {
 	if m == nil || m.Data == nil || len(m.Dimensions) != 2 {
 		return nil, fmt.Errorf("invalid matrix for transpose")
@@ -221,6 +242,7 @@ func Transpose(m *Matx) (*Matx, error) {
 	rows, cols := m.Dimensions[0], m.Dimensions[1]
 	result := make([]float64, len(m.Data))
 
+	// Perform element-wise transpose
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 			result[j*rows+i] = m.Data[i*cols+j]
@@ -236,6 +258,8 @@ func Transpose(m *Matx) (*Matx, error) {
 	return mat, nil
 }
 
+// RowSwap swaps two rows in a 2D matrix.
+// Returns an error if input is invalid or indices are out of bounds.
 func RowSwap(m *Matx, row1, row2 int) error {
 	if m == nil {
 		return fmt.Errorf("Matrix is nil")
@@ -259,6 +283,8 @@ func RowSwap(m *Matx, row1, row2 int) error {
 	return nil
 }
 
+// Multiply performs matrix multiplication between two 2D matrices.
+// Returns the result matrix or an error if dimensions are incompatible.
 func Multiply(m1, m2 *Matx) (*Matx, error) {
 	if m1 == nil || m2 == nil {
 		return nil, fmt.Errorf("one or both input matrices are nil")
@@ -280,11 +306,11 @@ func Multiply(m1, m2 *Matx) (*Matx, error) {
 		return nil, fmt.Errorf("failed to create result matrix: %w", err)
 	}
 
+	// Standard matrix multiplication
 	for i := 0; i < resultRows; i++ {
 		for j := 0; j < resultCols; j++ {
 			sum := 0.0
 			for k := 0; k < m1.Dimensions[1]; k++ {
-
 				a := m1.Data[i*m1.Dimensions[1]+k]
 				b := m2.Data[k*m2.Dimensions[1]+j]
 				sum += a * b

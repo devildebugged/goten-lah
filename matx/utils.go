@@ -2,8 +2,9 @@ package matx
 
 import "fmt"
 
+// Clone creates a deep copy of the given matrix `m`, replicating both data and dimensions.
+// Returns the cloned matrix or an error if construction of the new matrix fails.
 func Clone(m *Matx) (*Matx, error) {
-
 	cloneData := make([]float64, len(m.Data))
 	copy(cloneData, m.Data)
 
@@ -14,10 +15,11 @@ func Clone(m *Matx) (*Matx, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to clone matrix: %w", err)
 	}
-
 	return cloneMatx, nil
 }
 
+// PrintMatx prints the contents of a matrix in a structured, human-readable format.
+// Optional `format` parameter controls numeric formatting (e.g., float precision, scientific notation).
 func PrintMatx(m *Matx, format ...string) {
 	if m == nil || m.Data == nil || len(m.Dimensions) == 0 {
 		fmt.Println("Invalid or empty matrix")
@@ -27,29 +29,30 @@ func PrintMatx(m *Matx, format ...string) {
 	// Default format
 	f := "%.4f"
 
-	// Optional alias map
+	// Predefined format aliases
 	formatAliases := map[string]string{
-		"int":   "%.0f", // no decimal
-		"float": "%.4f", // default
+		"int":   "%.0f",
+		"float": "%.4f",
 		"f":     "%.4f",
 		"short": "%.2f",
-		"sci":   "%e", // scientific notation
-		"g":     "%g", // shortest
+		"sci":   "%e",
+		"g":     "%g",
 	}
 
+	// Override format if specified
 	if len(format) > 0 {
 		if alias, ok := formatAliases[format[0]]; ok {
 			f = alias
 		} else {
-			f = format[0] // use raw fmt string if not an alias
+			f = format[0]
 		}
 	}
 
 	data := m.Data
 	shape := m.Dimensions
 
+	// Recursive printing for nested matrix dimensions
 	var printRecursive func(offset, dim, depth int)
-
 	printRecursive = func(offset, dim, depth int) {
 		indent := func(d int) {
 			for i := 0; i < d; i++ {
@@ -58,6 +61,7 @@ func PrintMatx(m *Matx, format ...string) {
 		}
 
 		if dim == len(shape)-1 {
+			// Base case: print final dimension elements
 			indent(depth)
 			fmt.Print("{")
 			for i := 0; i < shape[dim]; i++ {
@@ -68,6 +72,7 @@ func PrintMatx(m *Matx, format ...string) {
 			}
 			fmt.Print("}")
 		} else {
+			// Recursive case: traverse higher dimensions
 			indent(depth)
 			fmt.Print("{\n")
 			stride := 1
@@ -90,6 +95,8 @@ func PrintMatx(m *Matx, format ...string) {
 	fmt.Println()
 }
 
+// Reverse returns a new matrix where the specified axis of the input matrix `m` is reversed.
+// Axis must be within the bounds of the matrix dimensions.
 func Reverse(m *Matx, axis int) (*Matx, error) {
 	if m == nil {
 		return nil, fmt.Errorf("Matrix is nil")
@@ -101,6 +108,7 @@ func Reverse(m *Matx, axis int) (*Matx, error) {
 	out := make([]float64, len(m.Data))
 	copy(out, m.Data)
 
+	// Calculate stride for the reversal axis
 	stride := 1
 	for i := axis + 1; i < len(m.Dimensions); i++ {
 		stride *= m.Dimensions[i]
@@ -109,10 +117,10 @@ func Reverse(m *Matx, axis int) (*Matx, error) {
 	block := m.Dimensions[axis] * stride
 	numBlocks := len(m.Data) / block
 
+	// Reverse the axis by swapping relevant slices within each block
 	for b := 0; b < numBlocks; b++ {
 		for i := 0; i < stride; i++ {
 			for j := 0; j < m.Dimensions[axis]; j++ {
-
 				srcIdx := b*block + j*stride + i
 				dstIdx := b*block + (m.Dimensions[axis]-1-j)*stride + i
 				out[dstIdx] = m.Data[srcIdx]
@@ -122,10 +130,12 @@ func Reverse(m *Matx, axis int) (*Matx, error) {
 
 	return &Matx{
 		Data:       out,
-		Dimensions: append([]int{}, m.Dimensions...),
+		Dimensions: append([]int{}, m.Dimensions...), // Defensive copy
 	}, nil
 }
 
+// mustGet retrieves an element from matrix `m` using provided coordinates.
+// Panics on invalid access; for internal/testing convenience only.
 func mustGet(m *Matx, coords ...int) float64 {
 	val, err := Get(m, coords...)
 	if err != nil {
@@ -134,14 +144,19 @@ func mustGet(m *Matx, coords ...int) float64 {
 	return val
 }
 
+// mustSet assigns a value `val` into matrix `m` at the specified coordinates.
+// Panics if assignment fails; useful in initialization or testing context.
 func mustSet(val float64, m *Matx, coords ...int) {
 	if err := Set(val, m, coords...); err != nil {
 		panic(err)
 	}
 }
 
+// matxExamples is a global store of named example matrices used for testing and demonstration.
 var matxExamples = map[string]*Matx{}
 
+// InitExamples populates the global `matxExamples` map with a predefined set of common matrices.
+// Panics if any matrix instantiation fails.
 func InitExamples() {
 	examples := []struct {
 		name string
@@ -179,7 +194,8 @@ func InitExamples() {
 	}
 }
 
-// Give_matx returns a named example matrix
+// GiveMatx retrieves a matrix from the examples map by name.
+// Returns an error if the matrix is not defined.
 func GiveMatx(name string) (*Matx, error) {
 	if m, ok := matxExamples[name]; ok {
 		return m, nil
@@ -187,7 +203,7 @@ func GiveMatx(name string) (*Matx, error) {
 	return nil, fmt.Errorf("unknown matx: %s", name)
 }
 
-// List_matx_examples returns the available names
+// List_matx_examples returns the list of all available example matrix names.
 func List_matx_examples() []string {
 	keys := make([]string, 0, len(matxExamples))
 	for k := range matxExamples {

@@ -5,6 +5,8 @@ import "testing"
 func BenchmarkMultiply2x2(b *testing.B) {
 	a, _ := New([]float64{1, 2, 3, 4}, []int{2, 2})
 	c, _ := New([]float64{5, 6, 7, 8}, []int{2, 2})
+
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = Multiply(a, c)
 	}
