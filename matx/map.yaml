@@ -1,0 +1,46 @@
+math_ops.go
+- Add
+- Negate
+- Scale
+- Raise
+
+lin_alg.go
+- Det
+- Invert
+- IsInvertible
+- LuDecomposeWithPivoting
+- IsSymmetric
+- Dot
+- Transpose
+- RowSwap
+- Multiply
+- Hadamard
+
+structure.go
+- matx structure
+- Size
+- CheckDimensionEquality
+- CheckMultiplicationCondition
+
+utils.go
+- Clone
+- PrintMatx
+- Reverse
+- mustGet
+- mustSet
+- InitExamples
+- GiveMatx
+- List_matx_examples
+
+access.go
+- Get
+- Set
+- GetRow
+- GetCol
+
+constructors.go
+- Ones
+- Zeros
+- Identity
+- Rand
+- New
