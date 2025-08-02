@@ -349,3 +349,13 @@ func Hadamard(m1, m2 *Matx) (*Matx, error) {
 	return result, nil
 
 }
+
+// Flattens the matrix by changeing the dimensions attribute
+func (m *Matx) Flatten() error {
+	if m == nil {
+		return fmt.Errorf("nil matrix passed")
+	}
+
+	m.Dimensions = []int{len(m.Data)}
+	return nil
+}
