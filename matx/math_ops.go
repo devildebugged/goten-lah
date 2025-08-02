@@ -40,59 +40,53 @@ func Add(m1, m2 *Matx) (*Matx, error) {
 	return resultMatx, nil
 }
 
-// Negate performs an in-place negation of all elements in matrix `m`.
-// Modifies the original matrix. Returns an error if `m` is nil or uninitialized.
-func Negate(m *Matx) (*Matx, error) {
+// Negate performs an in-place negation of all elements in the matrix.
+func (m *Matx) Negate() error {
 	if m == nil || m.Data == nil {
-		return nil, fmt.Errorf("cannot negate: matrix is nil or uninitialized")
+		return fmt.Errorf("cannot negate: matrix is nil or uninitialized")
 	}
 
 	for i := range m.Data {
 		m.Data[i] *= -1
 	}
-	return m, nil
+	return nil
 }
 
-// Scale multiplies all elements of matrix `m` by scalar `n`.
-// The operation is performed in-place. Returns an error if the matrix is nil.
-func Scale(m *Matx, n int) (*Matx, error) {
-	if m == nil {
-		return nil, fmt.Errorf("nil matrix given")
+// Scale multiplies all elements of the matrix by scalar `n`.
+func (m *Matx) Scale(n int) error {
+	if m == nil || m.Data == nil {
+		return fmt.Errorf("nil matrix given")
 	}
 
-	for i := 0; i < len(m.Data); i++ {
+	for i := range m.Data {
 		m.Data[i] *= float64(n)
 	}
-	return m, nil
+	return nil
 }
 
-// Raise raises each element of matrix `m` to the specified `power`.
-// The operation is performed in-place. Returns an error if the matrix is nil or uninitialized.
-func Raise(m *Matx, power float64) (*Matx, error) {
+// Raise raises each element of the matrix to the specified `power`.
+func (m *Matx) Raise(power float64) error {
 	if m == nil || m.Data == nil {
-		return nil, fmt.Errorf("cannot raise: matrix is nil or uninitialized")
+		return fmt.Errorf("cannot raise: matrix is nil or uninitialized")
 	}
 
 	for i := range m.Data {
 		m.Data[i] = math.Pow(m.Data[i], power)
 	}
-	return m, nil
+	return nil
 }
 
 // Reciprocal transforms each element of the matrix to its multiplicative inverse (1/x).
-// This operation is performed in-place. Returns an error if the matrix is nil, uninitialized,
-// or contains zero elements (which would cause division by zero).
-func Reciprocal(m *Matx) (*Matx, error) {
+func (m *Matx) Reciprocal() error {
 	if m == nil || m.Data == nil {
-		return nil, fmt.Errorf("cannot reciprocate: matrix or matrix data is nil")
+		return fmt.Errorf("cannot reciprocate: matrix or matrix data is nil")
 	}
 
 	for i := range m.Data {
 		if m.Data[i] == 0 {
-			return nil, fmt.Errorf("cannot reciprocate: division by zero at index %d", i)
+			return fmt.Errorf("cannot reciprocate: division by zero at index %d", i)
 		}
 		m.Data[i] = 1 / m.Data[i]
 	}
-
-	return m, nil
+	return nil
 }
